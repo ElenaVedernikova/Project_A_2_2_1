@@ -119,7 +119,7 @@ class RegistrationTest {
     }
 
     @Test
-    void shouldRegisterByAccountNumberDOMModification2() {
+    void shouldReturnPositiveMessageWithCalendar() {
         $("[placeholder='Город']").setValue("Пе");
         $$(".menu-item__control").last().click();
         $("[data-test-id=date] button").click();
