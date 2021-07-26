@@ -2,20 +2,18 @@ package ru.netology.web;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.*;
 
 class RegistrationTest {
+
     @BeforeEach
     void setUp() {
         open("http://localhost:9999");
@@ -23,10 +21,8 @@ class RegistrationTest {
 
     @Test
     void shouldReturnPositiveMessage() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, +3);
-        SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM.yyyy");
-        String date = formatDate.format(calendar.getTime());
+        Generation generation = new Generation();
+        String date = generation.dateGeneration(3);
         $("[placeholder='Город']").setValue("Петрозаводск");
         $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[placeholder='Дата встречи']").doubleClick().setValue(date);
@@ -34,15 +30,13 @@ class RegistrationTest {
         $("[name='phone']").setValue("+79200000000");
         $("[data-test-id=agreement]").click();
         $$("button").find(exactText("Забронировать")).click();
-        $(withText("Успешно!")).shouldBe(visible, Duration.ofSeconds(15));
+        $("[data-test-id=notification] .notification__content").shouldBe(visible, Duration.ofSeconds(15)).shouldHave(exactText("Встреча успешно забронирована на " + date));
     }
-
+   
     @Test
     void shouldReturnNegativeMessageForErrorCity() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, +3);
-        SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM.yyyy");
-        String date = formatDate.format(calendar.getTime());
+        Generation generation = new Generation();
+        String date = generation.dateGeneration(3);
         $("[placeholder='Город']").setValue("Париж");
         $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[placeholder='Дата встречи']").doubleClick().setValue(date);
@@ -55,10 +49,8 @@ class RegistrationTest {
 
     @Test
     void shouldReturnNegativeMessageForErrorDate() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, +2);
-        SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM.yyyy");
-        String date = formatDate.format(calendar.getTime());
+        Generation generation = new Generation();
+        String date = generation.dateGeneration(2);
         $("[placeholder='Город']").setValue("Петрозаводск");
         $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[placeholder='Дата встречи']").doubleClick().setValue(date);
@@ -72,10 +64,8 @@ class RegistrationTest {
 
     @Test
     void shouldReturnNegativeMessageForErrorName() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, +3);
-        SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM.yyyy");
-        String date = formatDate.format(calendar.getTime());
+        Generation generation = new Generation();
+        String date = generation.dateGeneration(3);
         $("[placeholder='Город']").setValue("Петрозаводск");
         $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[placeholder='Дата встречи']").doubleClick().setValue(date);
@@ -89,10 +79,8 @@ class RegistrationTest {
 
     @Test
     void shouldReturnNegativeMessageForErrorPhone() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, +3);
-        SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM.yyyy");
-        String date = formatDate.format(calendar.getTime());
+        Generation generation = new Generation();
+        String date = generation.dateGeneration(3);
         $("[placeholder='Город']").setValue("Петрозаводск");
         $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[placeholder='Дата встречи']").doubleClick().setValue(date);
@@ -105,10 +93,8 @@ class RegistrationTest {
 
     @Test
     void shouldReturnNegativeMessageForCheckbox() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, +3);
-        SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM.yyyy");
-        String date = formatDate.format(calendar.getTime());
+        Generation generation = new Generation();
+        String date = generation.dateGeneration(3);
         $("[placeholder='Город']").setValue("Петрозаводск");
         $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[placeholder='Дата встречи']").doubleClick().setValue(date);
@@ -120,12 +106,13 @@ class RegistrationTest {
 
     @Test
     void shouldReturnPositiveMessageWithCalendar() {
+
         $("[placeholder='Город']").setValue("Пе");
         $$(".menu-item__control").last().click();
         $("[data-test-id=date] button").click();
-        DateTimeFormatter date = DateTimeFormatter.ofPattern("d");
-        String nextWeek = LocalDate.now().plusWeeks(1).format(date);
-        String thisWeek = LocalDate.now().format(date);
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("d");
+        String nextWeek = LocalDate.now().plusWeeks(1).format(dateFormat);
+        String thisWeek = LocalDate.now().format(dateFormat);
         if (Integer.parseInt(thisWeek) > Integer.parseInt(nextWeek)) {
             $("div[data-step='1']").click();
         }
